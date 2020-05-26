@@ -1,0 +1,4 @@
+llvmlite
+networkx
+numpy
+scipy
