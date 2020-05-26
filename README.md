@@ -60,8 +60,7 @@ Packages should be preferably installed via [Homebrew](https://brew.sh).
 * Optional: [Doxygen](http://www.stack.nl/~dimitri/doxygen/) and [Graphviz](http://www.graphviz.org/) for generating API documentation
 
 ### Process
-
-Note: Although RetDec now supports a system-wide installation ([#94](https://github.com/avast/retdec/issues/94)), unless you use your distribution's package manager to install it, we recommend installing RetDec locally into a designated directory. The reason for this is that uninstallation will be easier as you will only need to remove a single directory. To perform a local installation, run `cmake` with the `-DCMAKE_INSTALL_PREFIX=<path>` parameter, where `<path>` is directory into which RetDec will be installed (e.g. `$HOME/projects/retdec-install` on Linux and macOS, and `C:\projects\retdec-install` on Windows).
+We opt to install retdec locally and pass this to PYTHONPATH later
 
 * Clone the repository as a submodule:
   * `git submodule init`
