@@ -2,3 +2,4 @@ llvmlite
 networkx
 numpy
 scipy
+urwid

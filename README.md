@@ -1,5 +1,11 @@
 # Autobentifier Tool
 
+## Python Requirements
+`pip install -r requirements.txt`
+
+Separately install Networkx-METIS: https://github.com/networkx/networkx-metis/
+If you are building on MacOS there is a workaround to install via conda. `conda install -c conda-forge networkx-metis`
+
 ## Retdec Build and Installation
 
 This section describes a local build and installation of RetDec. Instructions for Docker are given in the next section.

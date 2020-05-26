@@ -1,3 +1,6 @@
 [submodule "external/retdec"]
 	path = external/retdec
 	url = https://github.com/avast/retdec.git
+[submodule "external/networkx-metis"]
+	path = external/networkx-metis
+	url = https://github.com/networkx/networkx-metis.git
