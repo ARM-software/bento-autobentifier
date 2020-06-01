@@ -1,6 +1,7 @@
 from collections import defaultdict
 from llvmlite import binding
 import json
+import sys
 
 ## Normally would use LLVM to get this info, but that's a real PITA right now. Opt for simple json parser instead
 #binding.initialize()
@@ -81,7 +82,7 @@ class ModuleAnalyzer:
 
     def analyze(self, fname):
         with open(fname) as fp:
-            js = json.read(fp)
+            js = json.load(fp)
             for function in js["functions"]:
                 fname = function["name"]
                 self.functions[fname] = Function(function)
@@ -89,5 +90,9 @@ class ModuleAnalyzer:
                 gname = g["name"]
                 self.globals = GlobalVar(g)
 
+
+if __name__ == '__main__':
+    m = ModuleAnalyzer
+    m.analyze(sys.argv[1])
 
 

@@ -5,10 +5,11 @@ class Node:
   """
   Simple Hashable node type representing a function in a call graph
   """
-  def __init__(self, name):
+  def __init__(self, name, arg_pointer_cost=5):
     self.name = name
     self.code_size = 0
     self.pertubation = 0
+    self.arg_pointer_cost = arg_pointer_cost
   
   def __hash__(self):
     return self.name.__hash__()
