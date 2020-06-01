@@ -37,3 +37,9 @@ def get_call_graph_from_dotfile(dotfile):
   for nfrom, nto, w in graph.edges:
     mg.add_edge(Node(nfrom), Node(nto), frequency=in_degree[nto], param_size=0, perturbation=0, weight=0)
   return mg
+
+if __name__ == '__main__':
+  import pprint
+  g = get_call_graph_from_dotfile(sys.argv[1])
+  pprint.pprint(g.edges.data)
+  #g[node_from][node_to][param_size] = 5
