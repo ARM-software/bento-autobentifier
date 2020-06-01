@@ -34,6 +34,7 @@ def get_call_graph_from_dotfile(dotfile):
   mg = nx.MultiDiGraph()
   for node in graph.nodes:
     mg.add_node(Node(node))
+  # Edges dont have this sort of representation so we have to append additional attributes to each edge. May algorithms use weight as the default attribute so lets initialize one and update it later.
   for nfrom, nto, w in graph.edges:
     mg.add_edge(Node(nfrom), Node(nto), frequency=in_degree[nto], param_size=0, perturbation=0, weight=0)
   return mg
