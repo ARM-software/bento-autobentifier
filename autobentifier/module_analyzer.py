@@ -104,13 +104,13 @@ class ModuleAnalyzer:
       for fName in self.functions:
         try:
           f = xl.get_function(fName)
+          #if f.is_declaration():
+          #  continue
         except NameError:
           logger.info("Function %s not found in llvmlite" % fName)
           continue
         except:
           logger.warning("Unhandled exception occured in llvmlite.get_function")
-          continue
-        if f.is_declaration():
           continue
 
         for b in f.blocks:
@@ -122,6 +122,17 @@ class ModuleAnalyzer:
               for match in matches:
                 if match in self.globals:
                   self.functions[fName].add_global_reference(match)
+
+  def get_function(self, fName):
+    if fName in self.functions:
+      return self.functions[fName]
+    else:
+      return None
+  def get_global(self, fName):
+    if fName in self.globals:
+      return self.globals[gName]
+    else:
+      return None
 
 
 if __name__ == '__main__':

@@ -11,6 +11,7 @@ class Node:
     self.code_size = 0
     self.pertubation = 0
     self.arg_pointer_cost = arg_pointer_cost
+    self.is_global_var = False
   
   def __hash__(self):
     return self.name.__hash__()
