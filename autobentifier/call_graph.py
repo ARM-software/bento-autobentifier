@@ -39,6 +39,12 @@ class EdgeData:
   def weight(self):
     return self.frequency + self.param_size + self.perturbation
 
+  def __str__(self):
+    return "Edge Weight: %f" % (self.weight)
+  
+  def __repr__(self):
+    return "Edge Weight: %f" % (self.weight)
+
 #dotfile = "demo.elf.c.cg.dot"
 #def get_call_graph_from_dotfile(dotfile):
 #  graph = nx.MultiDiGraph(nx.drawing.nx_pydot.read_dot(dotfile))
@@ -53,7 +59,7 @@ class EdgeData:
 
 class CallGraph:
   def __init__(self):
-    self.mg = nx.Graph()
+    self.mg = nx.DiGraph()
 
   def read_dotfile(self, dotfile):
     graph = nx.MultiDiGraph(nx.drawing.nx_pydot.read_dot(dotfile))
