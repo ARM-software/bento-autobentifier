@@ -110,6 +110,8 @@ class ModuleAnalyzer:
         except:
           logger.warning("Unhandled exception occured in llvmlite.get_function")
           continue
+        if f.is_declaration():
+          continue
 
         for b in f.blocks:
           # getting Globals is a real PITA, it's easier to parse the opcode
