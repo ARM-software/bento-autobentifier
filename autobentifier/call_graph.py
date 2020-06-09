@@ -64,7 +64,6 @@ class CallGraph:
   def read_dotfile(self, dotfile):
     graph = nx.drawing.nx_pydot.read_dot(dotfile)
     self.mg.graph = graph.graph
-    print(type(graph))
     in_degree = graph.in_degree()
     for node in graph.nodes:
       n = Node(node)

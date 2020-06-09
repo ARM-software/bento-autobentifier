@@ -72,9 +72,9 @@ def to_pydot(N, modules):
 
   for module_num, m in enumerate(module_list):
     mName = "bb_%d" % module_num
-    ep_cluster = pydot.Cluster(mName, color="blue3", fontcolor="blue3")
+    ep_cluster = pydot.Cluster(mName, label=mName, color="blue3", fontcolor="blue3")
     mName = "%s_internal" % mName
-    cluster = pydot.Cluster(mName, color="cornsilk1", fontcolor="cornsilk1")
+    cluster = pydot.Cluster(mName, label=mName, color="cornsilk1", fontcolor="cornsilk1")
     for n in m:
       if n in entrypoints:
         node = pydot.Node(n, style="filled", fillcolor="darkolivegreen3")
