@@ -46,33 +46,37 @@ class EdgeData:
     return "Edge Weight: %f" % (self.weight)
 
 #dotfile = "demo.elf.c.cg.dot"
-#def get_call_graph_from_dotfile(dotfile):
-#  graph = nx.MultiDiGraph(nx.drawing.nx_pydot.read_dot(dotfile))
-#  in_degree = graph.in_degree()
-#  mg = nx.MultiDiGraph()
-#  for node in graph.nodes:
-#    mg.add_node(Node(node))
-#  # Edges dont have this sort of representation so we have to append additional attributes to each edge. May algorithms use weight as the default attribute so lets initialize one and update it later.
-#  for nfrom, nto, w in graph.edges:
-#    mg.add_edge(Node(nfrom), Node(nto), frequency=in_degree[nto], param_size=0, perturbation=0, weight=0)
-#  return mg
+def get_call_graph_from_dotfile(dotfile):
+  graph = nx.drawing.nx_pydot.read_dot(dotfile)
+  in_degree = graph.in_degree()
+  mg = nx.MultiDiGraph()
+  for node in graph.nodes:
+    mg.add_node(Node(node))
+  # Edges dont have this sort of representation so we have to append additional attributes to each edge. May algorithms use weight as the default attribute so lets initialize one and update it later.
+  for nfrom, nto, w in graph.edges:
+    mg.add_edge(Node(nfrom), Node(nto), frequency=in_degree[nto], param_size=0, perturbation=0, weight=0)
+  return mg
 
 class CallGraph:
   def __init__(self):
     self.mg = nx.DiGraph()
 
   def read_dotfile(self, dotfile):
-    graph = nx.MultiDiGraph(nx.drawing.nx_pydot.read_dot(dotfile))
+    graph = nx.drawing.nx_pydot.read_dot(dotfile)
+    self.mg.graph = graph.graph
+    print(type(graph))
     in_degree = graph.in_degree()
     for node in graph.nodes:
       n = Node(node)
-      self.mg.add_node(n.name, node_data=n, weight=0)
+      self.mg.add_node(n.name, node_data=n, weight=1)
     # Edges dont have this sort of representation so we have to append additional attributes to each edge. May algorithms use weight as the default attribute so lets initialize one and update it later.
     for nfrom, nto, w in graph.edges:
-      if not self.mg.has_edge(Node(nfrom), Node(nto)):
-        self.mg.add_edge(Node(nfrom), Node(nto), edge_data=EdgeData(in_degree[nto]), weight=0)
+      nodeFrom = Node(nfrom)
+      nodeTo = Node(nto)
+      if not self.mg.has_edge(nodeFrom, nodeTo):
+        self.mg.add_edge(nodeFrom.name, nodeTo.name, edge_data=EdgeData(in_degree[nto]), weight=1)
       else:
-        self.mg[Node(nfrom)][Node(nto)]["edge_data"].frequency += in_degree[nto]
+        self.mg[nodeFrom.name][nodeTo.name]["edge_data"].frequency += in_degree[nto]
 
   @property
   def graph(self):
