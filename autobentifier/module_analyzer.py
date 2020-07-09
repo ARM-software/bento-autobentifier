@@ -138,7 +138,7 @@ class GlobalVar:
 
 class ModuleAnalyzer:
   def __init__(self):
-    self.functions = defaultdict(dict)
+    self.functions = defaultdict(None)
     self.globals = defaultdict(dict)
 
   def analyze(self, json_fname, ll_fname):
@@ -181,14 +181,18 @@ class ModuleAnalyzer:
               for match in matches:
                 if match in self.globals:
                   self.functions[fName].add_global_reference(match)
+    for f in self.functions:
+      if type(self.functions[f]) != Function:
+        logger.warning("Encountered a invalid type in ModuleAnalyzer function list")
+
 
   def get_function(self, fName):
     if fName in self.functions:
       return self.functions[fName]
     else:
       return None
-  def get_global(self, fName):
-    if fName in self.globals:
+  def get_global(self, gName):
+    if gName in self.globals:
       return self.globals[gName]
     else:
       return None

@@ -1,5 +1,5 @@
 import autobentifier
-from autobentifier.call_graph import CallGraph
+from autobentifier.call_graph import CallGraph, Node, EdgeData
 from autobentifier.decompiler import Decompiler
 from autobentifier.module_analyzer import ModuleAnalyzer
 from glob import glob
@@ -84,6 +84,28 @@ class AutoBentifier:
         param_cost += param.get_cost(param_cost)
 
       self.cg.graph[nfrom][nto]["edge_data"].param_size = param_cost
+
+    # Update CG with references to global variables
+    for nodeFromName in self.ma.functions:
+      nodeFrom = self.ma.get_function(nodeFromName)
+      if nodeFrom.name not in self.cg.graph:
+        continue
+      if nodeFrom.global_references:
+        # references stored by name
+        for gr in nodeFrom.global_references:
+          g = self.ma.get_global(gr)
+          # if the node doesnt exist add it
+          if gr not in self.cg.graph:
+            n = Node(gr, is_global_var=True, code_size=g.get_cost())
+            self.cg.graph.add_node(gr, node_data=n, weight=int(n.weight))
+          if not self.cg.graph.has_edge(nodeFrom, gr):
+            edge = EdgeData(1)
+            multiplier = 2 if g.constant else 1
+            edge.param_size = self.cg.graph.nodes[gr]["node_data"].weight * multiplier
+            self.cg.graph.add_edge(nodeFrom.name, gr, edge_data=edge, weight=1)
+          else:
+            self.cg.graph[nodeFrom.name][gr]["edge_data"].frequency += 1
+
     print("Done, ready to partition")
 
   def partition(self, num_partitions=5):

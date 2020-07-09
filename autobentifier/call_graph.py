@@ -6,12 +6,12 @@ class Node:
   """
   Simple Hashable node type representing a function in a call graph
   """
-  def __init__(self, name, arg_pointer_cost=5):
+  def __init__(self, name, arg_pointer_cost=5, is_global_var=False, code_size=0, pertubation=0):
     self.name = re.sub("^Node_", "", name)
-    self.code_size = 0
-    self.pertubation = 0
+    self.code_size = code_size
+    self.pertubation = pertubation 
     self.arg_pointer_cost = arg_pointer_cost
-    self.is_global_var = False
+    self.is_global_var = is_global_var
   
   def __hash__(self):
     return self.name.__hash__()
