@@ -15,7 +15,7 @@ binding.initialize_all_asmprinters()
 
 logger = logging.getLogger("ModuleAnalyzer")
 
-def type_cost(mstr, pointer_cost):
+def basic_type_cost(mstr, pointer_cost):
   ptr_count = mstr.count("*")
   mstr = re.sub("\*", "", mstr)
   if "void" in mstr:
@@ -30,6 +30,31 @@ def type_cost(mstr, pointer_cost):
     return ptr_count * pointer_cost * numbytes
   else:
     return numbytes
+
+def get_type_cost(t, pointer_cost=1):
+  t_cost = 0
+  ptr_cnt = 0
+  if "[" in t:
+    m = re.match(r"^\[(?P<arr_count>\d+)\s*x\s*(?P<type>\w\d+\**)\]", t)
+    if not m:
+      logger.error("Unexpected array type found %s" % t)
+    arr_count = int(m.group('arr_count'))
+    t_cost = arr_count * basic_type_cost(m.group('type'), pointer_cost)
+  elif "(" in t: # Callback type
+    # Assume this is all grouped as a pointer
+    m = re.match(r"(?P<return_type>\w+\**)\s+\((?P<params>[a-zA-Z0-9, *]+)\)", t)
+    if not m:
+      logger.error("Unexpected function pointer type found %s" % t)
+    t_cost += basic_type_cost(m.group('return_type'), pointer_cost)
+    fp_params = m.group('params')
+    for param in fp_params.split(','):
+      t_cost += basic_type_cost(param.strip(), pointer_cost)
+    t_cost *= pointer_cost
+
+  else:
+    t_cost = basic_type_cost(t, pointer_cost)
+  
+  return t_cost
 
 
 class FunctionParam:
@@ -50,30 +75,7 @@ class FunctionParam:
 
   def get_cost(self, pointer_cost=1):
     t = self.type
-    t_cost = 0
-    ptr_cnt = 0
-    if "[" in t:
-      m = re.match(r"^\[(?P<arr_count>\d+)\s*x\s*(?P<type>\w\d+\**)\]", t)
-      if not m:
-        logger.error("Unexpected array type found %s" % t)
-      arr_count = int(m.group('arr_count'))
-      t_cost = arr_count * type_cost(m.group('type'), pointer_cost)
-    elif "(" in t: # Callback type
-      # Assume this is all grouped as a pointer
-      m = re.match(r"(?P<return_type>\w+\**)\s+\((?P<params>[a-zA-Z0-9, *]+)\)", t)
-      if not m:
-        logger.error("Unexpected function pointer type found %s" % t)
-      t_cost += type_cost(m.group('return_type'), pointer_cost)
-      fp_params = m.group('params')
-      for param in fp_params.split(','):
-        t_cost += type_cost(param.strip(), pointer_cost)
-      t_cost *= pointer_cost
-
-    else:
-      t_cost = type_cost(t, pointer_cost)
-    
-    return t_cost
-
+    return get_type_cost(t, pointer_cost)
 
 class Function:
   def __init__(self, jsonStr):
@@ -112,6 +114,7 @@ class Function:
 class GlobalVar:
   def __init__(self, jsonStr):
     self.json = jsonStr
+    self.constant = False
 
   @property
   def name(self):
@@ -128,6 +131,10 @@ class GlobalVar:
   @property
   def storage(self):
     return self.json["storage"]
+  
+  def get_cost(self, pointer_cost=1):
+    t = self.type
+    return get_type_cost(t, pointer_cost)
 
 class ModuleAnalyzer:
   def __init__(self):
@@ -147,6 +154,12 @@ class ModuleAnalyzer:
     with open(ll_fname) as fp:
       x = fp.read()
       xl = binding.parse_assembly(x)
+      # HACK HACK HACK HACK HACK HACK
+      for g in xl.global_variables:
+        if g.name and "constant" in str(g):
+          #import pdb; pdb.set_trace()
+          gg = self.globals[g.name].constant = True
+          
       for fName in self.functions:
         try:
           f = xl.get_function(fName)

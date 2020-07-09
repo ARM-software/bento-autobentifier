@@ -16,6 +16,9 @@ class InvalidAutoBentoParams(Exception):
   pass
 
 class AutoBentifier:
+  """
+  AutoBentifier takes a list of object files, or a directory of object files and attempts to lift, and partition them into Bento Boxes.
+  """
   def __init__(self, object_file_names=[], obj_dirs=[], bb_dir="bb"):
     self.object_file_names = []
     self.intermediate_object_file_names = []
