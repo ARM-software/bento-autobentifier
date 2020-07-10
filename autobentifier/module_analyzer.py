@@ -20,6 +20,8 @@ def basic_type_cost(mstr, pointer_cost):
   mstr = re.sub("\*", "", mstr)
   if "void" in mstr:
     return ptr_count * pointer_cost
+  if "float" in mstr:
+    return ptr_count * pointer_cost * 4
   numbits = int(mstr[1:])
   numbytes = 1
   if numbits == 1:
@@ -31,15 +33,19 @@ def basic_type_cost(mstr, pointer_cost):
   else:
     return numbytes
 
+# TODO fix this by writing actual parser
 def get_type_cost(t, pointer_cost=1):
   t_cost = 0
   ptr_cnt = 0
   if "[" in t:
-    m = re.match(r"^\[(?P<arr_count>\d+)\s*x\s*(?P<type>\w\d+\**)\]", t)
+    m = re.match(r"^\[(?P<arr_count>\d+)\s*x\s*(?P<type>\w\d+\**)", t)
     if not m:
       logger.error("Unexpected array type found %s" % t)
-    arr_count = int(m.group('arr_count'))
-    t_cost = arr_count * basic_type_cost(m.group('type'), pointer_cost)
+      logger.warning("Using default cost")
+      return 40
+    else:
+      arr_count = int(m.group('arr_count'))
+      t_cost = arr_count * basic_type_cost(m.group('type'), pointer_cost)
   elif "(" in t: # Callback type
     # Assume this is all grouped as a pointer
     m = re.match(r"(?P<return_type>\w+\**)\s+\((?P<params>[a-zA-Z0-9, *]+)\)", t)
