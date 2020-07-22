@@ -79,7 +79,7 @@ class FunctionParam:
   def type(self):
     return self.json["type"]["llvmIr"]
 
-  def get_cost(self, pointer_cost=1):
+  def get_cost(self, pointer_cost=100):
     t = self.type
     return get_type_cost(t, pointer_cost)
 
@@ -115,7 +115,9 @@ class Function:
 
   def add_global_reference(self, global_name):
     self.global_references.add(global_name)
-
+  
+  def is_global(self):
+    return False
 
 class GlobalVar:
   def __init__(self, jsonStr):
@@ -138,9 +140,12 @@ class GlobalVar:
   def storage(self):
     return self.json["storage"]
   
-  def get_cost(self, pointer_cost=1):
+  def get_cost(self, pointer_cost=100):
     t = self.type
     return get_type_cost(t, pointer_cost)
+
+  def is_global(self):
+    return True
 
 class ModuleAnalyzer:
   def __init__(self):
