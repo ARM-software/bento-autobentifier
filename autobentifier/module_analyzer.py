@@ -1,3 +1,10 @@
+#
+# The Autobentifier
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
 from collections import defaultdict
 from llvmlite import binding
 import logging

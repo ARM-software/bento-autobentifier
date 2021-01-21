@@ -1,3 +1,10 @@
+#
+# The Autobentifier
+#
+# Copyright (c) 2020, Arm Limited. All rights reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+#
+
 import autobentifier
 from autobentifier.call_graph import CallGraph, Node, EdgeData
 from autobentifier.decompiler import Decompiler
