@@ -1,5 +1,17 @@
 # Autobentifier Tool
 
+This is the home of the bento-autobentifier, a tool for automatically partitioning existing binaries into bento-boxes while minimizing the overhead of box switching.
+
+**!! Note: This project is an expirement with no promise of support. Use at your own risk. !!**
+
+## What are Bento-boxes?
+
+Bento-boxes are independently-linked, memory-isolated pieces of code that are designed to work together. You can think of them as a light-weight alternative to processes for microcontrollers.
+
+For more information on this idea, see the [bento-linker](https://github.com/arm-software/bento-linker).
+
+This tool is an experiment in taking an existing binary, and generating those code boundaries automatically. Effectively allowing you to augment an existing program with Bento-box's memory isolation runtimes without additional programmer intervention.
+
 ## Python Requirements
 `pip install -r requirements.txt`
 
